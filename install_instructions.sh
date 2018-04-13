@@ -132,7 +132,7 @@ update-uis(){
 cat > /root/uihosts.txt <<END_TEXT
 aws-node1
 aws-node2
-aws-node5
+storage-aws-node5
 azr-storage1
 azr-storage2
 azr-storage5
