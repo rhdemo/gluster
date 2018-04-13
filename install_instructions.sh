@@ -72,11 +72,11 @@ lsblk
 # echo '/dev/xvdb1 /data/brick1 xfs loop,inode64,noatime,nodiratime 0 0' >> /etc/fstab
 # mount -a && mount
 #AZURE
-# fdisk /dev/sdc
+# fdisk $1
 # at fsdisk prompt: new partition (n, accept all defaults), write to disk (w).
 # mkfs.xfs -i size=512 /dev/sdc1
 # mkdir -p /data/brick1
-# echo '/dev/sdc1 /data/brick1 xfs loop,inode64,noatime,nodiratime 0 0' >> /etc/fstab
+# echo '$1 /data/brick1 xfs loop,inode64,noatime,nodiratime 0 0' >> /etc/fstab
 # mount -a && mount
 }
 
@@ -128,5 +128,20 @@ cd /etc/swift; gluster-swift-gen-builders $1
 swift-init main start
 }
 
+update-uis(){
+cat > /root/uihosts.txt <<END_TEXT
+aws-node1
+aws-node2
+aws-node5
+azr-storage1
+azr-storage2
+azr-storage5
+gce-storage-west1
+gce-storage-west2
+gce-storage-west5
+END_TEXT
 
 
+for i in $(cat uihosts.txt); do echo =====$i=====; ssh $i "cd /root/django-swiftbrowser; git pull; ./install-ui.sh"; done
+
+}
