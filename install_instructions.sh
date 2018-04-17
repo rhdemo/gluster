@@ -2,7 +2,7 @@
 #Setting up Demo Machine
 
 
-init-rhel(){
+init-rhel() {
 
 source pw.config
 yum install subscription-manager -y
@@ -26,12 +26,12 @@ yum install wget -y
 }
 
 
-install-gluster(){
+install-gluster() {
     yum install glusterfs-server -y
 }
 
 
-install-ssh(){
+install-ssh() {
 
 systemctl stop firewalld; iptables -F
 
@@ -54,7 +54,7 @@ systemctl restart sshd
 }
 #-------------------------------- Blocks ----------------
 
-init-block(){
+init-block() {
 
 lsblk
 #GCE
@@ -80,7 +80,7 @@ lsblk
 # mount -a && mount
 }
 
-init-swift(){
+init-swift() {
 yum install openstack-swift-* -y
 yum install python-scandir python-prettytable git -y
 git clone https://github.com/gluster/gluster-swift; cd gluster-swift
@@ -108,7 +108,7 @@ python setup.py install
 
 }
 
-init-configs(){
+init-configs() {
 #From wherever you install clone
 cd ./conf/
 cp account-server.conf container-server.conf proxy-server.conf object-server.conf /etc/swift/.
@@ -116,7 +116,7 @@ cp webhook.py /usr/lib/python2.7/site-packages/swift/common/middleware/.
 }
 
 
-init-volume(){
+init-volume() {
 #PEER PROBE?
 
 #Build Volume Examples
@@ -128,7 +128,7 @@ cd /etc/swift; gluster-swift-gen-builders $1
 swift-init main start
 }
 
-update-uis(){
+update-uis() {
 cat > /root/uihosts.txt <<END_TEXT
 aws-node1
 aws-node2
