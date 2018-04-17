@@ -3,7 +3,7 @@
 display_usage() {
         echo -e "\nUsage:\n curl_gluster [bucket_name] [file_name] \n"
         echo "curl_gluster sends a file to a gluster bucket."
-        echo -e "\nGluster end point is stored in env GLUSTER_ENDPOINT"
+        echo -e "\nGluster end point is stored in env GLUSTER_ENDPOINT or will default to localhost"
 
 }
 
