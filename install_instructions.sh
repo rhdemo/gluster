@@ -14,15 +14,17 @@ rpm --import https://raw.githubusercontent.com/CentOS-Storage-SIG/centos-release
 
 cat > /etc/yum.repos.d/gluster.repo <<END_TEXT
 [centos-gluster312]
-name=CentOS-$releasever - Gluster 3.12
-baseurl=http://mirror.centos.org/centos/7/storage/$basearch/gluster-3.12/
+name=CentOS-7- Gluster 3.12
+baseurl=http://mirror.centos.org/centos/7/storage/x86_64/gluster-3.12/
 gpgcheck=1
 enabled=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Storage
 END_TEXT
 
-yum install wget -y
+subscription-manager repos --disable=rhel-7-server-htb-rpms
 
+yum install wget -y
+yum install git docker -y
 }
 
 
