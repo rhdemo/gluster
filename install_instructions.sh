@@ -112,6 +112,7 @@ python setup.py install
 
 init-configs() {
 #From wherever you install clone
+git clone https://github.com/rhdemo/django-swiftbrowser.git
 cd ./conf/
 cp account-server.conf container-server.conf proxy-server.conf object-server.conf /etc/swift/.
 cp webhook.py /usr/lib/python2.7/site-packages/swift/common/middleware/.
