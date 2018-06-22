@@ -106,34 +106,3 @@ aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage-west3:/d
 `touch test1.txt`
 `curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
 
-
-
-
-
-
-
-
-
-
-
-
-
-Installing Gluster
-This can be done before or after prepping the blocks.
-
-Configure /etc/hosts and assign each instance a shorthand name to its external IP. E.g.:
-
-For some reason, glusterd does not like accessing a host via its own external ip. This means that for each node, append the hostname to the localhost line. E.g.
-
-
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 gce-node1
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.128.0.5 preserve-jcope-rhs-7nvd.c.openshift-gce-devel.internal preserve-jcope-rhs-7nvd  # Added by Google
-169.254.169.254 metadata.google.internal  # Added by Google
-
-35.202.110.25    gce-node2
-52.90.27.26      aws-node1
-54.147.233.113   aws-node2
-
-
-
