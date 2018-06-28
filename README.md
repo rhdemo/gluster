@@ -101,7 +101,13 @@ aws-storage2:/data/brick4/gv0 azr-storage2:/data/brick4/gv0 gce-storage2:/data/b
 aws-storage3:/data/brick1/gv0 azr-storage3:/data/brick1/gv0 gce-storage3:/data/brick1/gv0 \
 aws-storage3:/data/brick2/gv0 azr-storage3:/data/brick2/gv0 gce-storage3:/data/brick2/gv0 \
 aws-storage3:/data/brick3/gv0 azr-storage3:/data/brick3/gv0 gce-storage3:/data/brick3/gv0 \
-aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage3:/data/brick4/gv0 \
+aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage3:/data/brick4/gv0 
+
+gluster volume start gv0
+
+cd /etc/swift; gluster-swift-gen-builders gv0
+
+swift-init main start
 ```
 ### Setup gluster-swift
 1. Here just use the script in the install_instructions.sh function called init-swift()
