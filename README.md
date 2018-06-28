@@ -105,14 +105,50 @@ aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage3:/data/b
 
 gluster volume start gv0
 
+```
+### Setup gluster-swift
+1. Here just use the script in the install_instructions.sh function called init-swift(). This needs to be done on each VM you want swift proxy
+```
+yum install openstack-swift-* -y
+yum install python-scandir python-prettytable git -y
+git clone https://github.com/gluster/gluster-swift; cd gluster-swift
+python setup.py install
+mkdir -p /etc/swift/; cp etc/* /etc/swift/; cd /etc/swift
+for tmpl in *.conf-gluster ; do cp ${tmpl} ${tmpl%.*}.conf; done
+yum install python-swiftclient -y
+yum install memcached -y
+#For security, add -U 0 to OPTIONS in vi /etc/sysconfig/memcached
+sed -i '5s/.*/OPTIONS="-U 0"/' /etc/sysconfig/memcached
+systemctl start memcached
+systemctl enable memcached
+
+wget https://pypi.python.org/packages/source/s/setuptools/setuptools-7.0.tar.gz --no-check-certificate
+tar xzf setuptools-7.0.tar.gz;  cd setuptools-7.0
+python setup.py install
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+pip install --upgrade requests
+
+git clone https://github.com/openstack/swift3; cd swift3/
+sed -i '1s/.*/ /' requirements.txt
+sed -i '3s/.*/ /' requirements.txt
+python setup.py install
+```
+2. Then run the script in the install_instructions.sh function called init-configs().  This needs to be done on each VM with swift proxy
+```
+git clone https://github.com/rhdemo/django-swiftbrowser.git
+cd ./conf/
+cp account-server.conf container-server.conf proxy-server.conf object-server.conf /etc/swift/.
+cp webhook.py /usr/lib/python2.7/site-packages/swift/common/middleware/.
+
+```
+3. Build the swift keyring and then start gluster swift 
+```
 cd /etc/swift; gluster-swift-gen-builders gv0
 
 swift-init main start
-```
-### Setup gluster-swift
-1. Here just use the script in the install_instructions.sh function called init-swift()
-2. Then run the script in the install_instructions.sh function called init-configs()
 
+```
 ### Setup swift-browser (optional)
 1. [See the rhdemo/django-swiftbrowser repo for instructions](https://github.com/rhdemo/django-swiftbrowser)
 
