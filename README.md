@@ -83,7 +83,7 @@ copy to vi ~/.ssh/authorized_keys and paste in the pub key from master
 ### Create Volume
 1. Once passwordless ssh is setup, you should connect to all VMs from your designated master (again, master can be any VM)
 2. Now use peer probe command to connect gluster on all the VMs using the names you setup in the /etc/hosts file
-  * i.e. `peer probe aws-node2` or `peer probe azr-node3` or whatever you named them
+  * i.e. `peer probe aws-storage2` or `peer probe azr-storage3` or whatever you named them
 3. Do the peer probe for all VMs
   * `peer probe status` should show you connect to 8 nodes when you are done
 4. TROUBLESHOOTING: if peer probe is not working you may need to manually start glusterd: `systemctl start glusterd`
@@ -108,12 +108,12 @@ aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage3:/data/b
 2. Then run the script in the install_instructions.sh function called init-configs()
 
 ### Setup swift-browser (optional)
-1. See the rhdemo/django-swiftbrowser repo for instructions
+1. [See the rhdemo/django-swiftbrowser repo for instructions](https://github.com/rhdemo/django-swiftbrowser)
 
 ### Test your storage and proxy connection
 1. Create a bucket:
-  *`curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket`
+  `curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket`
 2. Add file to the bucket
-  *`touch test1.txt`
-  *`curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
+  `touch test1.txt`
+  `curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
 
