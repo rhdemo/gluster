@@ -111,9 +111,13 @@ aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage3:/data/b
 1. [See the rhdemo/django-swiftbrowser repo for instructions](https://github.com/rhdemo/django-swiftbrowser)
 
 ### Test your storage and proxy connection
-1. Create a bucket:
-  `curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket`
+1. Create a bucket
+```
+curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket
+```
 2. Add file to the bucket
-  `touch test1.txt`
-  `curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
+```
+touch test1.txt
+curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt
+```
 
