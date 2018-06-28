@@ -15,7 +15,7 @@
 - The 3 cloud providers used for this demo include GCP, AWS, and Azure.  There are scripts and CLI tools to make the setup more automated, but you can simply use each cloud provider's Web UI to make your machines.
 - At minimum, you should install wget, git, and docker on the VMs
 - Add the repo for the 3.12 version of glusterd, there are some example scripts in the install_instructions.sh
-
+```
 rpm --import https://raw.githubusercontent.com/CentOS-Storage-SIG/centos-release-storage-common/master/RPM-GPG-KEY-CentOS-SIG-Storage
 
 cat > /etc/yum.repos.d/gluster.repo <<END_TEXT
@@ -26,21 +26,24 @@ gpgcheck=1
 enabled=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Storage
 END_TEXT
-
-- yum install glusterfs-server -y
+```
+- `yum install glusterfs-server -y`
 - Turn off firewall or if you want to be safer, open proper ports for gluster which you can find in the gluster manual
-- systemctl stop firewalld; iptables -F
+- `systemctl stop firewalld; iptables -F`
 - Create an ssh-key and setup the /etc/hosts file so passwordless ssh can occur from your designated "master" machine (this can be any of the VMs, just pick one and always use it)
 - Update ssh config for passwordless root:
-`sed -i~ '2iPermitRootLogin without-password' /etc/ssh/sshd_config
- sed -i~ '3iPubkeyAuthentication yes' /etc/ssh/sshd_config
- systemctl restart sshd`
+```
+sed -i~ '2iPermitRootLogin without-password' /etc/ssh/sshd_config
+sed -i~ '3iPubkeyAuthentication yes' /etc/ssh/sshd_config
+systemctl restart sshd
+```
 
 - Copy pub key you generated to each VMs authorized_hosts file:
-`cat ~/.ssh/id_ras.pub
+```
+cat ~/.ssh/id_ras.pub
 copy to (if ssh directory does not exist, do a quick sssh-keygen on that VM)
-vi ~/.ssh/authorized_keys and paste in the pub key from master`
-
+vi ~/.ssh/authorized_keys and paste in the pub key from master
+```
 -Configure /etc/hosts and assign each instance a shorthand name to its external IP. E.g.:
  
  For some reason, glusterd does not like accessing a host via its own external ip. This means that for each node, append the hostname to the localhost line. E.g.
@@ -61,23 +64,24 @@ vi ~/.ssh/authorized_keys and paste in the pub key from master`
 - Note on Azure, we had to use 1 TB to get fast enough iops
 
 ### Prepare Disks
-- These are the basic steps
-- `lsblk` to get the disk name
-- `fdisk <disk_name>` i.e. `fdisk /dev/sdb`
-- at fsdisk prompt: new partition (n, accept all defaults), write to disk (w).
-- mkfs.xfs -i size=512 <disk_partition> i.e. `mkfs.xfs -i size=512 /dev/sdb1`
-- `mkdir -p /data/brick1`
-- echo '<disk_partition>  /data/brick1 xfs loop,inode64,noatime,nodiratime 0 0' >> /etc/fstab
-- `mount -a && mount` (this should have no errors)
+* These are the basic steps
+* `lsblk` to get the disk name
+* `fdisk <disk_name>` i.e. `fdisk /dev/sdb`
+  * at fsdisk prompt: new partition (n, accept all defaults), write to disk (w).
+* mkfs.xfs -i size=512 <disk_partition> i.e. `mkfs.xfs -i size=512 /dev/sdb1`
+* `mkdir -p /data/brick1`
+* echo '<disk_partition>  /data/brick1 xfs loop,inode64,noatime,nodiratime 0 0' >> /etc/fstab
+* `mount -a && mount` (this should have no errors)
 
 ### Create Volume
-- Once passwordless ssh is setup, you should connect to all VMs from your designated master (again, master can be any VM)
-- Now use peer probe command to connect gluster on all the VMs using the names you setup in the /etc/hosts file
-- i.e. `peer probe aws-node2` or `peer probe azr-node3` or whatever you named them
-- Do the peer probe for all VMs
-- `peer probe status` should show you connect to 8 nodes when you are done
-- TROUBLESHOOTING: if peer probe is not working you may need to manually start glusterd: `systemctl start glusterd`
-- Create volume using replica three.  This is an example assuming you have created a 12x3 gluster cluster:
+1. Once passwordless ssh is setup, you should connect to all VMs from your designated master (again, master can be any VM)
+2. Now use peer probe command to connect gluster on all the VMs using the names you setup in the /etc/hosts file
+  * i.e. `peer probe aws-node2` or `peer probe azr-node3` or whatever you named them
+3. Do the peer probe for all VMs
+  * `peer probe status` should show you connect to 8 nodes when you are done
+4. TROUBLESHOOTING: if peer probe is not working you may need to manually start glusterd: `systemctl start glusterd`
+5. Create volume using replica three.  This is an example assuming you have created a 12x3 gluster cluster:
+```
 gluster volume create gv0 replica 3 \ 
 aws-storage1:/data/brick1/gv0 azr-storage1:/data/brick1/gv0 gce-storage-west1:/data/brick1/gv0 \
 aws-storage1:/data/brick2/gv0 azr-storage1:/data/brick2/gv0 gce-storage-west1:/data/brick2/gv0 \
@@ -91,18 +95,18 @@ aws-storage3:/data/brick1/gv0 azr-storage3:/data/brick1/gv0  gce-storage-west3:/
 aws-storage3:/data/brick2/gv0 azr-storage3:/data/brick2/gv0 gce-storage-west3:/data/brick2/gv0 \
 aws-storage3:/data/brick3/gv0 azr-storage3:/data/brick3/gv0 gce-storage-west3:/data/brick3/gv0 \
 aws-storage3:/data/brick4/gv0 azr-storage3:/data/brick4/gv0 gce-storage-west3:/data/brick4/gv0 \
-
+```
 ### Setup gluster-swift
-- Here just use the script in the install_instructions.sh function called init-swift()
-- Then run the script in the install_instructions.sh function called init-configs()
+1. Here just use the script in the install_instructions.sh function called init-swift()
+2. Then run the script in the install_instructions.sh function called init-configs()
 
 ### Setup swift-browser (optional)
-- See the rhdemo/django-swiftbrowser repo for instructions
+1. See the rhdemo/django-swiftbrowser repo for instructions
 
 ### Test your storage and proxy connection
-- Create a bucket:
-`curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket`
-- Add file to the bucket
-`touch test1.txt`
-`curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
+1. Create a bucket:
+  *`curl -i -X PUT -H "X-Auth-Token:ANYVALUEHERE" http://localhost:8080/v1/AUTH_gv0/mybucket`
+2. Add file to the bucket
+  *`touch test1.txt`
+  *`curl -v -X PUT  -H "X-Auth-Token: ANYVALUEHERE" -T test1.txt http://localhost:8080/v1/AUTH_gv0/mybucket/test1.txt`
 
