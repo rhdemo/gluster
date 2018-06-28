@@ -44,8 +44,8 @@ cat ~/.ssh/id_ras.pub
 copy to (if ssh directory does not exist, do a quick sssh-keygen on that VM)
 vi ~/.ssh/authorized_keys and paste in the pub key from master
 ```
--Configure /etc/hosts and assign each instance a shorthand name to its external IP. E.g.:
- 
+- Configure /etc/hosts and assign each instance a shorthand name to its external IP. E.g.:
+``` 
  For some reason, glusterd does not like accessing a host via its own external ip. This means that for each node, append the hostname to the localhost line. E.g.
  
  
@@ -58,7 +58,7 @@ vi ~/.ssh/authorized_keys and paste in the pub key from master
  52.90.27.26      aws-node1
  54.147.233.113   aws-node2
  102.134.12.123   azr-node1
-
+```
 ### Setup disks
 - At minimum, you will need a 100GB SSD drive on each VM.  We used 4 100GB SSD drives per VM giving us 36 disks to create our volume
 - Note on Azure, we had to use 1 TB to get fast enough iops
